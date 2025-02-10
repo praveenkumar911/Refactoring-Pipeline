@@ -1,6 +1,4 @@
-# .github/workflows/git.yml
-
-name: Refactor Code and Create PR
+name: Refactor Code and Push to Master
 
 on:
   push:
@@ -8,7 +6,7 @@ on:
       - master  # Trigger on pushes to the master branch
 
 jobs:
-  refactor-and-pr: 
+  refactor-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: master  # The branch to check out
+        ref: master  # Ensure we are on the master branch
 
     # Step 2: Set up Python
     - name: Set up Python
@@ -33,28 +31,15 @@ jobs:
     # Step 4: Run the refactoring script
     - name: Refactor code
       run: |
-        python refactor.py  # No need to pass any arguments
+        python refactor.py  # Executes the refactoring script
 
-    # Step 5: Commit changes
-    - name: Commit changes
+    # Step 5: Commit and push changes
+    - name: Commit and push changes
       run: |
         git config --global user.name "praveenkumar911"
         git config --global user.email "praveenkumarpalaboyina@gmail.com"
         git add .
-        git commit -m "Refactor code using LLM" || echo "No changes to commit"
-
-    # Step 6: Push changes to a new branch
-    - name: Push changes to new branch
-      run: |
-        
+        git commit -m "Refactored code using LLM" || echo "No changes to commit"
         git push origin master
-
-    # Step 7: Create a pull request
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.CLASS_TOKEN }}
-        title: "Refactor Code Using LLM"
-        body: "Automated refactoring of code using LLM."
-        base: master
-        branch: master
+      env:
+        GITHUB_TOKEN: ${{ secrets.CLASS_TOKEN }}
